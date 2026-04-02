@@ -5,11 +5,12 @@ const {createUser,getUsers,getUser,deleteUser,signup,login} = require("../contro
 const authMiddleware = require("../middleware/auth");
 
 // Routes
-router.post("/create",authMiddleware, createUser);
+router.post("/create", createUser);
 router.get("/get", getUsers);
 router.get("/get/:id", getUser);
-router.delete("/delete/:id",authMiddleware, deleteUser);
+router.delete("/delete/:id", deleteUser);
+
 router.post("/signup", signup);
-router.post("/login", authMiddleware, login);
+router.post("/login", login);
 
 module.exports = router;
