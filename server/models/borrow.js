@@ -18,4 +18,19 @@ const returnBook = async (borrow_id, client) => {
   return result.rows[0];
 };
 
-module.exports = {createBorrow,getActiveBorrow,returnBook,};
+// Get overdue books
+const getOverdueBooks = async () => {
+  const result = await pool.query(`SELECT * FROM borrowed_books WHERE return_date IS NULL AND due_date < CURRENT_DATE`);
+  return result.rows;
+};
+
+// Calculate fine
+const calculateFine = (due_date) => {
+  const today = new Date();
+  const due = new Date(due_date);
+  const diffTime = today - due;
+  const daysLate = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  return daysLate > 0 ? daysLate * 10 : 0; // ₹10 per day
+};
+
+module.exports = {createBorrow,getActiveBorrow,returnBook,getOverdueBooks,calculateFine,};

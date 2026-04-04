@@ -66,3 +66,17 @@ exports.returnBook = async (req, res) => {
     client.release();
   }
 };
+
+// GET OVERDUE BOOKS
+exports.getOverdueBooks = async (req, res) => {
+  try {
+    const overdueBooks = await borrowModel.getOverdueBooks();
+    const result = overdueBooks.map((item) => {
+      const fine = borrowModel.calculateFine(item.due_date);
+      return {...item,fine};
+    });
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
