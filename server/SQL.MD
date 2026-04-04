@@ -1,3 +1,19 @@
+{ -> admin
+  "email": "digo@gmail.com",
+  "password": "123456"
+}
+
+http://localhost:5000/api/borrow/
+{
+  "book_id": 2,
+  "days": 7
+}
+http://localhost:5000/api/borrow/return
+{
+  "book_id":2,
+  "borrow_id":2
+}
+
 postgres=# psql -U postgres
 postgres=# CREATE DATABASE library_db;
 CREATE DATABASE

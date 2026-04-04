@@ -40,20 +40,25 @@ exports.borrowBook = async (req, res) => {
 };
 
 exports.returnBook = async (req, res) => {
-  const { borrow_id } = req.body;
+  const { borrow_id,book_id } = req.body;
   const client = await pool.connect();
 
   try {
     await client.query("BEGIN");
 
+    const check=await client.query(`SELECT * FROM borrowed_books WHERE borrow_id=$1 AND book_id=$2 AND return_date IS NULL`,[borrow_id,book_id]);
+    if(check.rowCount===0) throw new Error("No active borrow record found for this book and borrow ID");
+
     // 1. return book
-    const borrow = await borrowModel.returnBook(borrow_id, client);
+    const borrow = check.rows[0];
     if (!borrow) throw new Error("Borrow record not found");
+
+    const updated = await client.query(`UPDATE borrowed_books SET return_date = CURRENT_DATE WHERE borrow_id = $1 RETURNING *`,[borrow_id]);
 
     // 2. increase copies
     await client.query("UPDATE books SET copies_available = copies_available + 1 WHERE book_id=$1", [borrow.book_id] );
     await client.query("COMMIT");
-    res.json({ message: "Book returned", borrow });
+    res.json({ message: "Book returned", data:updated.rows[0], });
   } catch (err) {
     await client.query("ROLLBACK");
     res.status(400).json({ error: err.message });
