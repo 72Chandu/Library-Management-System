@@ -1,6 +1,6 @@
 const pool = require("../config/db");
 const bookModel = require("../models/book");
-const borrowModel = require("../models/borrow");
+const borrowModel = require("../models/borrow");  
 
 // BORROW BOOK
 exports.borrowBook = async (req, res) => {
@@ -77,6 +77,18 @@ exports.getOverdueBooks = async (req, res) => {
     });
     res.json(result);
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// GET USER BORROWED BOOKS
+exports.getBorrowedBooks = async (req, res) => {
+  const user_id = req.user.user_id;
+  try {
+    const books = await borrowModel.getUserBorrowedBooks(user_id);
+    res.json(books);
+  } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };

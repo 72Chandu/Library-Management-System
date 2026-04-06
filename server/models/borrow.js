@@ -33,4 +33,19 @@ const calculateFine = (due_date) => {
   return daysLate > 0 ? daysLate * 10 : 0; // ₹10 per day
 };
 
-module.exports = {createBorrow,getActiveBorrow,returnBook,getOverdueBooks,calculateFine,};
+//GET USER BORROWED BOOKS
+const getUserBorrowedBooks = async (user_id) => {
+  const result = await pool.query(
+    `SELECT 
+      b.borrow_id, b.book_id, bk.title,bk.author,
+      bk.genre,b.borrow_date,b.due_date
+     FROM borrowed_books b
+     JOIN books bk ON b.book_id = bk.book_id
+     WHERE b.user_id = $1 AND b.return_date IS NULL
+     ORDER BY b.borrow_date DESC`,
+    [user_id]
+  );
+  return result.rows;
+};
+
+module.exports = {createBorrow,getActiveBorrow,returnBook,getOverdueBooks,calculateFine,getUserBorrowedBooks,};
