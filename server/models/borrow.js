@@ -48,4 +48,23 @@ const getUserBorrowedBooks = async (user_id) => {
   return result.rows;
 };
 
-module.exports = {createBorrow,getActiveBorrow,returnBook,getOverdueBooks,calculateFine,getUserBorrowedBooks,};
+const getBorrowedGrouped = async () => {
+  const result = await pool.query(
+    `SELECT 
+      u.user_id,
+      u.name,
+      bk.title,
+      bk.author,
+      b.borrow_date,
+      b.due_date
+     FROM borrowed_books b
+     JOIN users u ON b.user_id = u.user_id
+     JOIN books bk ON b.book_id = bk.book_id
+     WHERE b.return_date IS NULL
+     ORDER BY u.user_id, b.borrow_date`
+  );
+
+  return result.rows;
+};
+
+module.exports = {createBorrow,getActiveBorrow,returnBook,getOverdueBooks,calculateFine,getUserBorrowedBooks,getBorrowedGrouped};

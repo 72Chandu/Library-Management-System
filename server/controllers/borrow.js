@@ -92,3 +92,33 @@ exports.getBorrowedBooks = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+exports.getBorrowedUsersGrouped = async (req, res) => {
+  try {
+    const rows = await borrowModel.getBorrowedGrouped();
+    const grouped = {};
+    rows.forEach((row) => {
+      const userId = row.user_id;
+      const fine = borrowModel.calculateFine(row.due_date);
+
+      if (!grouped[userId]) {
+        grouped[userId] = {
+          user_id: userId,
+          name: row.name,
+          books: [],
+        };
+      }
+
+      grouped[userId].books.push({
+        title: row.title,
+        author: row.author,
+        borrow_date: row.borrow_date,
+        due_date: row.due_date,
+        fine,
+      });
+    });
+    res.json(Object.values(grouped));
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
