@@ -15,15 +15,14 @@ function BorrowedUsers() {
     setUsers(res.data);
   };
 
-  // 🔍 Search
+  //Search
   const filteredUsers = users.filter((u) =>
     u.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  // 📥 EXPORT CSV
+  //EXPORT CSV
   const exportCSV = () => {
     let csv = "User,Book,Author,Borrow Date,Due Date,Fine\n";
-
     users.forEach((user) => {
       user.books.forEach((book) => {
         csv += `${user.name},${book.title},${book.author},${book.borrow_date},${book.due_date},${book.fine}\n`;
@@ -41,60 +40,26 @@ function BorrowedUsers() {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
+      <h2 className="text-3xl font-bold mb-6">📖 Borrowed Books (User Wise)</h2>
 
-      <h2 className="text-3xl font-bold mb-6">
-        📖 Borrowed Books (User Wise)
-      </h2>
-
-      {/* 🔍 SEARCH + EXPORT */}
+      {/*SEARCH + EXPORT */}
       <div className="flex justify-between mb-6 gap-4">
-
-        <input
-          type="text"
-          placeholder="Search user..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full p-3 border rounded-lg shadow-sm"
-        />
-
-        <button
-          onClick={exportCSV}
-          className="bg-green-500 text-white px-4 rounded hover:bg-green-600"
-        >
-          📥 Export CSV
-        </button>
-
+        <input type="text" placeholder="Search user..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full p-3 border rounded-lg shadow-sm" />
+        <button onClick={exportCSV} className="bg-green-500 text-white px-4 rounded hover:bg-green-600">📥 Export CSV</button>
       </div>
 
       {filteredUsers.map((user) => {
         const isOpen = openUser === user.user_id;
-
-        // 📊 Total Fine
-        const totalFine = user.books.reduce(
-          (sum, b) => sum + b.fine,
-          0
-        );
-
+        const totalFine = user.books.reduce((sum, b) => sum + b.fine,0);
         return (
           <div key={user.user_id} className="mb-4 bg-white rounded-xl shadow">
 
             {/* USER HEADER */}
-            <div
-              onClick={() =>
-                setOpenUser(isOpen ? null : user.user_id)
-              }
-              className="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-100"
-            >
+            <div onClick={() => setOpenUser(isOpen ? null : user.user_id) } className="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-100">
               <div>
-                <h3 className="text-lg font-semibold text-blue-600">
-                  👤 {user.name}
-                </h3>
-
-                <p className="text-sm text-gray-500">
-                  Books: {user.books.length} | 💰 Fine: ₹{totalFine}
-                </p>
+                <h3 className="text-lg font-semibold text-blue-600">👤 {user.name}</h3>
+                <p className="text-sm text-gray-500">Books: {user.books.length} | 💰 Fine: ₹{totalFine} </p>
               </div>
-
               <span>{isOpen ? "🔽" : "▶️"}</span>
             </div>
 
@@ -119,49 +84,27 @@ function BorrowedUsers() {
                       const isOverdue = book.fine > 0;
 
                       return (
-                        <tr
-                          key={index}
-                          className={`border-t ${
-                            isOverdue
-                              ? "bg-red-100"
-                              : "bg-green-50"
-                          }`}
-                        >
+                        <tr key={index} className={`border-t ${ isOverdue ? "bg-red-100" : "bg-green-50" }`} >
                           <td className="p-2">{index + 1}</td>
                           <td className="p-2">{book.title}</td>
                           <td className="p-2">{book.author}</td>
-
-                          <td className="p-2">
-                            {book.borrow_date?.slice(0, 10)}
-                          </td>
-
-                          <td className="p-2">
-                            {book.due_date?.slice(0, 10)}
-                          </td>
-
-                          <td className="p-2 font-bold">
-                            ₹{book.fine}
-                          </td>
+                          <td className="p-2">{book.borrow_date?.slice(0, 10)}</td>
+                          <td className="p-2"> {book.due_date?.slice(0, 10)}</td>
+                          <td className="p-2 font-bold"> ₹{book.fine}</td>
                         </tr>
                       );
                     })}
                   </tbody>
                 </table>
-
               </div>
             )}
           </div>
         );
       })}
-
       {filteredUsers.length === 0 && (
-        <p className="text-center text-gray-500 mt-10">
-          No users found
-        </p>
+        <p className="text-center text-gray-500 mt-10">No users found </p>
       )}
-
     </div>
   );
 }
-
 export default BorrowedUsers;
