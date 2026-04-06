@@ -10,9 +10,27 @@ const createBook = async (title, author, genre, copies) => {
 };
 
 // Get All Books
-const getAllBooks = async () => {
-  const result = await pool.query("SELECT * FROM books");
-  return result.rows;
+const getAllBooks = async (search, page, limit) => {
+  const offset = (page - 1) * limit;
+
+  const result = await pool.query(
+    `SELECT * FROM books
+     WHERE title ILIKE $1 OR author ILIKE $1 OR genre ILIKE $1
+     ORDER BY book_id DESC
+     LIMIT $2 OFFSET $3`,
+    [`%${search}%`, limit, offset]
+  );
+
+  const countRes = await pool.query(
+    `SELECT COUNT(*) FROM books
+     WHERE title ILIKE $1 OR author ILIKE $1 OR genre ILIKE $1`,
+    [`%${search}%`]
+  );
+
+  return {
+    data: result.rows,
+    total: Number(countRes.rows[0].count),
+  };
 };
 
 // Get Book by ID

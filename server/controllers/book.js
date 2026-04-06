@@ -15,9 +15,10 @@ exports.addBook = async (req, res) => {
 };
 
 // Get All Books
-exports.getBooks = async (req, res) => {
+exports.getAllBooks = async (req, res) => {
   try {
-    const books = await bookModel.getAllBooks();
+    const { search = "", page = 1, limit = 5 } = req.query;
+    const books = await bookModel.getAllBooks(search,Number(page), Number(limit));
     res.json(books);
   } catch (err) {
     res.status(500).json({ error: err.message });
