@@ -91,3 +91,22 @@ exports.toggleBlockUser = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+exports.getStats = async (req, res) => {
+  try {
+    const books = await pool.query("SELECT COUNT(*) FROM books");
+    const users = await pool.query("SELECT COUNT(*) FROM users");
+    const borrowed = await pool.query(
+      "SELECT COUNT(*) FROM borrowed_books WHERE return_date IS NULL"
+    );
+
+    res.json({
+      books: Number(books.rows[0].count),
+      users: Number(users.rows[0].count),
+      borrowed: Number(borrowed.rows[0].count),
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

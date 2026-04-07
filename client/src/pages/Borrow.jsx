@@ -24,7 +24,7 @@ function Borrow() {
         try {
             setLoadingId(borrow_id);
             await API.post("/borrow/return", { borrow_id, book_id });
-            toast.success("✅ Book returned successfully!");
+            toast.success("Book returned successfully!");
             fetchBorrowedBooks();
         } catch (err) {
             toast.error(err.response?.data?.error || "Return failed");

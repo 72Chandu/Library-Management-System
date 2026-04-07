@@ -27,7 +27,6 @@ function Overdue() {
             <div key={book.borrow_id} className="bg-white border-l-4 border-red-500 rounded-2xl shadow-md p-5 hover:shadow-xl transition">
               <h3 className="text-lg font-semibold text-gray-800 mb-2">Title: {book.title}</h3>
               <p className="text-gray-600 text-sm">Author: {book.author}</p>
-              <p className="text-gray-500 text-sm mb-2">Genre: {book.genre}</p>
               <p className="text-red-500 font-medium text-sm">Due: {book.due_date?.slice(0, 10)}</p>
               <p className="text-orange-500 text-sm mt-1">Late by: {book.overdueDays} days</p>
               <p className="text-red-600 font-bold mt-2">Fine: ₹{book.fine}</p>
