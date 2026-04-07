@@ -14,7 +14,7 @@ const getUserByEmail = async (email) => {
 
 // Get All Users
 const getAllUsers = async () => {
-  const result = await pool.query("SELECT * FROM users");
+  const result = await pool.query("SELECT user_id, name, email, role, created_at, is_blocked FROM users ORDER BY created_at DESC");
   return result.rows;
 };
 

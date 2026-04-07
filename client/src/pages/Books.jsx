@@ -21,7 +21,7 @@ function Books() {
   const handleBorrow = async (book_id) => {
     try {
       await API.post("/borrow", {book_id,days: 7});
-      toast.success("📚 Book borrowed successfully!", {theme: "dark"});
+      toast.success("Book borrowed successfully!", {theme: "dark"});
       fetchBooks();
     } catch (err) {
       toast.error(err.response?.data?.error || "Something went wrong");

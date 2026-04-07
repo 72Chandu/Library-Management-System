@@ -1,7 +1,7 @@
 const userModel = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const pool = require("../config/db");
 // Get All Users
 exports.getUsers = async (req, res) => {
   try {
@@ -78,5 +78,16 @@ exports.logout = async (req, res) => {
     res.status(200).json({ success: true, message: "Logged out successfully"});
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+exports.toggleBlockUser = async (req, res) => {
+  try {
+    const { user_id } = req.params;
+    await pool.query(`UPDATE users  SET is_blocked = NOT is_blocked WHERE user_id = $1`, [user_id]);
+    res.json({ message: "User status updated" });
+  } catch (err) {
+    console.error("BLOCK ERROR:", err.message);
+    res.status(500).json({ error: err.message });
   }
 };
